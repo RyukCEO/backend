@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
@@ -42,5 +42,4 @@ const UserSchema = new schema({
     }
   });
 
-
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

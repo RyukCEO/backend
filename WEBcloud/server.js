@@ -1,36 +1,39 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const session = require('express-session');
-const crypto = require('crypto');
-var bodyParser = require('body-parser');
-var request = require('request');
-var cookie = require('cookie');
-const { MemoryStore } = require('express-session');
-var cookiejar = require('cookiejar');
-const jsTokens = require("js-tokens");
-var toArrayBuffer = require('to-arraybuffer');
-var Promise = require('promise');
-var WebSocketfaye = require('faye-websocket');
-var Extensions = require('websocket-extensions');
-const WebSocket = require('ws');
-//const Signal = require('libsignal-service');
-var forge = require('node-forge');
-const fs = require('fs-extra')
-const fetch = require('node-fetch');
-const cassandra = require('cassandra-driver');
-var cookieParser = require('cookie-parser')
-const dotenv = require('dotenv')
-const { MongoClient } = require('mongodb');
-const MongoStore = require('connect-mongo');
-const mongoose = require('mongoose');
+import express from 'express';
+import bcrypt from 'bcrypt';
+import session from 'express-session';
+import crypto from 'crypto';
+import bodyParser from 'body-parser';
+import request from 'request';
+import cookie from 'cookie';
+import { MemoryStore } from 'express-session';
+import cookiejar from 'cookiejar';
+import jsTokens from 'js-tokens';
+import toArrayBuffer from 'to-arraybuffer';
+import Promise from 'promise';
+import WebSocketfaye from 'faye-websocket';
+import Extensions from 'websocket-extensions';
+import WebSocket from 'ws';
+//import Signal from libsignal-service';
+import forge from 'node-forge';
+import fs from 'fs-extra'
+import fetch from 'node-fetch';
+import cassandra from 'cassandra-driver';
+import cookieParser from 'cookie-parser'
+import dotenv from 'dotenv'
+import { MongoClient } from 'mongodb';
+import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 
-const authroutes = require('./api/auth');
-const userroutes = require('./api/user');
-const mediapostroutes = require('./api/mediapost');
-const { response } = require('express');
-const User = require('./models/User');
+
+import authroutes from './api/auth.js';
+import userroutes from './api/user.js';
+import mediapostroutes from './api/mediapost.js';
+import { response } from 'express';
+import User from './models/User.js';
 const app = express()
-require('dotenv').config()
+import 'dotenv/config'
 
 
 
@@ -45,7 +48,7 @@ mongoose.connect('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDa
 .catch((err) => console.log(err))
 
 
-websocket = require('websocket-driver');
+import websocket from 'websocket-driver';
 
 
 //dotenv.config({ path: "./"})
@@ -66,7 +69,6 @@ client.connect(err => {
   client.close();
 });
 
-app.use(express.static(__dirname + '/public'));
 
 app.use(express.json())
 
@@ -316,7 +318,7 @@ function forwardMessageToClient(req, res) {
 */
 
 
-module.exports = app;
+export default app;
 
 const port = process.env.port || 8080;
 app.listen(port);

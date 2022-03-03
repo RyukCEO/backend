@@ -1,15 +1,15 @@
-const router = require("express").Router();
-const express = require("express");
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
-var bodyParser = require('body-parser');
-var Mustache = require('mustache');
-var mustacheExpress = require('mustache-express');
-const crypto = require('crypto');
-var forge = require('node-forge');
+import Router from "express";
+import express from "express";
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
+import bodyParser from 'body-parser';
+import crypto from 'crypto';
+import forge from 'node-forge';
+
+var router = express.Router()
 
 
-const User = require("../models/User")
+import User from "../models/User.js"
 
 
 router.post("/signup", (req, res, next) => {
@@ -121,8 +121,5 @@ router.post('/login', async (req, res, next) => {
 
 
 
-
-
-
-module.exports = router;
+export default router;
 

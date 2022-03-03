@@ -1,7 +1,11 @@
-const router = require("express").Router();
-const bcrypt = require("bcrypt")
+import Router from "express"
+import bcrypt from "bcrypt"
+import express from 'express'
 
-const User = require("../models/User")
+import User from "../models/User.js"
+
+var router = express.Router()
+
 
 //update user info
 router.put("/:id", async (req, res) => {
@@ -140,5 +144,4 @@ router.put("/:id/unfollow", async (req, res) => {
 
 
 
-
-module.exports = router;
+export default router;

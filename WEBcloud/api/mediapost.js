@@ -1,13 +1,12 @@
-const router = require("express").Router();
-const express = require("express");
-const mongoose = require("mongoose");
-var bodyParser = require('body-parser');
-var Mustache = require('mustache');
-var mustacheExpress = require('mustache-express');
+import Router from "express";
+import express from "express";
+import mongoose from "mongoose";
+import bodyParser from 'body-parser';
 
+var router = express.Router()
 
-const User = require("../models/mediapost");
-const mediapost = require("../models/mediapost");
+import User from "../models/mediapost.js";
+import mediapost from "../models/mediapost.js";
 
 //create a post
 
@@ -94,6 +93,5 @@ router.get("/timeline/all", async (req, res) => {
 });
 
 
-
-module.exports = router;
+export default router;
 

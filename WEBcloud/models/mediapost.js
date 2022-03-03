@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
@@ -32,5 +32,4 @@ const mediapostSchema = new schema({
     }
   });
 
-
-module.exports = mongoose.model('mediapost', mediapostSchema);
+export default mongoose.model('mediapost', mediapostSchema);
