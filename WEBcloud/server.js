@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const mysql = require('mysql');
 const session = require('express-session');
 const crypto = require('crypto');
 var bodyParser = require('body-parser');
@@ -9,7 +8,6 @@ var cookie = require('cookie');
 const { MemoryStore } = require('express-session');
 var cookiejar = require('cookiejar');
 const jsTokens = require("js-tokens");
-var MySQLStore = require('express-mysql-session')(session);
 var toArrayBuffer = require('to-arraybuffer');
 var Promise = require('promise');
 var WebSocketfaye = require('faye-websocket');
@@ -22,14 +20,9 @@ const fetch = require('node-fetch');
 const cassandra = require('cassandra-driver');
 var cookieParser = require('cookie-parser')
 const dotenv = require('dotenv')
-var Mustache = require('mustache');
-var mustacheExpress = require('mustache-express');
 const { MongoClient } = require('mongodb');
 const MongoStore = require('connect-mongo');
 const mongoose = require('mongoose');
-const Stripe = require('stripe');
-const stripe = Stripe('pk_test_51KVSNRC9yFRJsMaQyq2sZ8xBSNEApaSIZybZz3OsxRNK6cqbyobWcoA5BBc7z2W3uVYAEDxsbr74cQ8FrQK7brNA00GXkkGSd3');
-
 
 const authroutes = require('./api/auth');
 const userroutes = require('./api/user');
@@ -37,10 +30,12 @@ const mediapostroutes = require('./api/mediapost');
 const { response } = require('express');
 const User = require('./models/User');
 const app = express()
+require('dotenv').config()
+
 
 
 //mongoose mongodb database connection
-mongoose.connect('mongodb+srv://quax:1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: true,
@@ -55,19 +50,15 @@ websocket = require('websocket-driver');
 
 //dotenv.config({ path: "./"})
 /*http = require('http');
-var server = http.createServer();
-*/
+var server = http.createServer(); l
+*/ 
 
 
 app.use(express.json());
-app.engine('html', mustacheExpress());
-app.set('view engine', 'html');
-app.set('views', __dirname + '/public');
 app.use(cookieParser());
 
 
-const uri = "mongodb+srv://quax:1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
   const collection = client.db("test").collection("devices");
@@ -88,7 +79,7 @@ app.use(session({
     name: 'sid',
     secret: 'some secret',
     store: MongoStore.create({ 
-      mongoUrl: 'mongodb+srv://quax:1234@sessions.mnty4.mongodb.net/myFirstDatabase' }),
+    mongoUrl: 'mongodb+srv://ryuk:jz1234@sessions.mnty4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority' }),
     cookie: {
         maxage: 99 * 99,
         samesite: false,
@@ -137,6 +128,7 @@ app.use('/api/mediapost', mediapostroutes)
 
 
 app.get('/setting', (req,res) => {
+  res.sendFile(__dirname + '/public/setting/setting.html')
 })
 
 app.get('/logedin', (req,res) => {
@@ -155,19 +147,6 @@ console.log(req.sessionID)
 });
 
 
-app.get("/group/:groupid", (req,res) => {
-
-
-  
-
-});
-
-
-app.get("/message/:userid", (req,res) => {
-
-
-});
-
 
 app.get("/login", (req, res) => {
 /*
@@ -178,6 +157,7 @@ app.get("/login", (req, res) => {
 }
 */  
     console.log(req.sessionID)
+    res.render("login") 
 });
 
 
