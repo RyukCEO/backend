@@ -1,3 +1,4 @@
+//dependencies
 import express from 'express';
 import bcrypt from 'bcrypt';
 import session from 'express-session';
@@ -25,17 +26,19 @@ import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+import websocket from 'websocket-driver';
 
 
+// api route
 import authroutes from './api/auth.js';
 import userroutes from './api/user.js';
 import mediapostroutes from './api/mediapost.js';
 import { response } from 'express';
 import User from './models/User.js';
-const app = express()
 import 'dotenv/config'
 
 
+const app = express()
 
 //mongoose mongodb database connection
 mongoose.connect('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
@@ -48,9 +51,6 @@ mongoose.connect('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDa
 .catch((err) => console.log(err))
 
 
-import websocket from 'websocket-driver';
-
-
 //dotenv.config({ path: "./"})
 /*http = require('http');
 var server = http.createServer(); l
@@ -59,6 +59,7 @@ var server = http.createServer(); l
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 /* sentry */
@@ -123,11 +124,6 @@ client.connect(err => {
 });
 
 
-app.use(express.json())
-
-app.use(bodyParser.urlencoded({ extended: true }));
-
-
 app.use(session({
     resave: false,
     saveUninitialized: true,
@@ -143,8 +139,7 @@ app.use(session({
     }
 }))
 
-
-//remove in production 
+//remove in production, remove cookie everytime
 app.use((req, res, next) => {
   if (req.cookies.sid && !req.session.user) {
     res.clearCookie("sid");
@@ -152,74 +147,10 @@ app.use((req, res, next) => {
   next();
 });
 
-
-app.get("/profile/:userid",function(req,res,next){
-  var id = req.params.userid;
-
-  var getUserDetails= userModel.find({_id:id},{'email':1,'profileImage':1});
-
-  getUserDetails.exec()
-  .then(data=>{
-      res.status(200).json({
-          message:"OK",
-          results:data
-      });
-  })
-  .catch(err=>{
-      res.json(err);
-  })
-
-  res.render('', {
-    username: username,
-    avatar:  avatar
-  })
-});
-
-
+//api
 app.use('/api/auth', authroutes)
 app.use('/api/user', userroutes)
 app.use('/api/mediapost', mediapostroutes)
-
-
-
-app.get('/setting', (req,res) => {
-  res.sendFile(__dirname + '/public/setting/setting.html')
-})
-
-app.get('/logedin', (req,res) => {
-  if (!req.session || !req.sessionID || !req.session.user || !req.cookies.sid) {
-      const err = new Error("unatuh");
-      err.statusCode = 401;
-      res.redirect('/login')
-  } else {
-   res.render("logedin",{username:User.username}) 
-  };
-
-console.log(req.sessionID)
-  
-
-
-});
-
-
-
-app.get("/login", (req, res) => {
-/*
-  if (req.session || req.session.cookie) {
-    res.redirect('/logedin')
-  } else {
-    res.sendFile(__dirname + '/public/login/login.html')
-}
-*/  
-    console.log(req.sessionID)
-    res.render("login") 
-});
-
-
-app.get("/signup", (req,res) => {
-  res.render("signup") 
-});
-
 
 app.get("/logout", (req, res) => {
   if (req.session.user && req.cookies.sid) {
@@ -245,130 +176,6 @@ app.post('/logout', (req,res)  => {
     }
   })
 })
-
-
-//message protocal
-
-/*
-app.post('/send', receiveKeys);
-app.post('/get', sendKeys);
-app.post('/send/message', storeIncomingMessage);
-app.post('/get/message', forwardMessageToClient);
-*/
-//receiveKeys - get keys (initial key packet and preKeys) from client. 
-//Initial/Registration Packet:
-/*
-request.body = {
-	type: 'init',
-	deviceId: int,
-	registrationId: int,
-	identityKey: str,
-	signedPreKey: {
-		id: int,
-		key: str,
-		signature: str
-}, preKeys: [
-  {
-    id: int,
-    key: str
-  },
-  {
-    id: int,
-    key: str
-  },
-  ]
-}
-
-//Pre Keys Packet:
-request.body = {
-	type: 'pre-keys',
-	deviceId: int,
-	registrationId: int,
-	preKeys: [
-		{
-			id: int,
-			key: str
-		},
-		{
-			id: int,
-			key: str
-		},
-	]
-}
-
-var storageMap = {};
-var messageStorageMap = {};
-
-function receiveKeys(req, res){
-	let reqObj = req.body;
-	//console.log(req.body);
-	let storageKey = reqObj.registrationId.toString() + reqObj.deviceId.toString();
-	if(storageMap[storageKey]){
-		res.json({err: 'Init packet for this user already exists'});
-	} else {
-		storageMap[storageKey] = reqObj;
-		res.json({msg: 'Initial packet successfully saved'});
-	}
-	console.log('\n');
-	console.log('storageMap~~~~~~~');
-	console.log(storageMap);
-}
-
-function sendKeys(req, res){
-	let reqObj = req.body;
-	let storageKey = reqObj.registrationId.toString() + reqObj.deviceId.toString();
-	let responseObject;
-	if(storageMap[storageKey]){ 
-		if(storageMap[storageKey].preKeys.length !== 0){
-			responseObject = JSON.parse(JSON.stringify(storageMap[storageKey]));
-			responseObject.preKey = responseObject.preKeys[responseObject.preKeys.length - 1];
-			storageMap[storageKey].preKeys.pop();
-		} else {
-			responseObject = {err: 'Out of preKeys for this user'}
-		}
-	} else {
-		responseObject = {
-			err: 'Keys for ' + storageKey + ' user does not exist'
-		}
-	}
-	console.log(responseObject);
-	res.json(responseObject);
-}
-
-function storeIncomingMessage(req, res) {
-	let reqObj = req.body;
-	let messageStorageKey = reqObj.messageTo.registrationId.toString() + reqObj.messageTo.deviceId.toString() + reqObj.messageFrom.registrationId.toString() + reqObj.messageFrom.deviceId.toString();
-	if(messageStorageMap[messageStorageKey]) {
-		res.json({err: 'Can only deal with one message'});
-	} else {
-		messageStorageMap[messageStorageKey] = reqObj;
-		res.json({msg: 'Message successfully saved'});
-	}
-	console.log('\n');
-	console.log('~~~~~~~messageStorageMap~~~~~~~');
-	console.log(messageStorageMap);
-}
-
-function forwardMessageToClient(req, res) {
-	let reqObj = req.body;
-	let messageStorageKey = reqObj.messageTo.registrationId.toString() + reqObj.messageTo.deviceId.toString() + reqObj.messageFromUniqueId;
-	let responseObject;
-	if(messageStorageMap[messageStorageKey]){
-		if(storageMap[reqObj.messageFromUniqueId]){
-			responseObject = messageStorageMap[messageStorageKey];
-			responseObject.messageFrom = {
-				registrationId: storageMap[reqObj.messageFromUniqueId].registrationId,
-				deviceId: storageMap[reqObj.messageFromUniqueId].deviceId
-			};
-		} else {
-			{ err: 'Client: ' + reqObj.messageFromUniqueId + ' is not registered on this server.' }
-		}
-	} else {
-		responseObject = { err: 'Message from: ' + reqObj.messageFromUniqueId + ' to: ' + reqObj.messageTo.registrationId.toString() + reqObj.messageTo.deviceId.toString() + ' does not exist' };
-	}
-	res.json(responseObject);
-}
-*/
 
 
 export default app;
