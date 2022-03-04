@@ -61,6 +61,59 @@ app.use(express.json());
 app.use(cookieParser());
 
 
+/* sentry */
+Sentry.init({
+  dsn: "https://2f8e91edbc364356a287d40f6d08f557@o1158419.ingest.sentry.io/6241559",
+  integrations: [
+    new Sentry.Integrations.Http({ tracing: true }),
+    new Tracing.Integrations.Express({ app }),
+  ],
+
+  tracesSampleRate: 1.0,
+});
+
+
+app.use(Sentry.Handlers.requestHandler());
+app.use(Sentry.Handlers.tracingHandler());
+app.use(Sentry.Handlers.errorHandler());
+
+app.get("/debug-sentry", function mainHandler(req, res) {
+  throw new Error("My first Sentry error!");
+});
+
+app.use(function onError(err, req, res, next) {
+  // The error id is attached to `res.sentry` to be returned
+  // and optionally displayed to the user for support.
+  res.statusCode = 500;
+  res.end(res.sentry + "\n");
+});
+
+app.get("/debug-sentry", function (req, res) {
+  throw new Error("My first Sentry error!");
+  res.errorHandler
+});
+
+app.use(
+  Sentry.Handlers.errorHandler({
+    shouldHandleError(error) {
+      // Capture all 404 and 500 errors
+      if (error.status === 404 || error.status === 500) {
+        return true;
+      }
+      return false;
+    },
+  })
+);
+
+app.use(
+  Sentry.Handlers.requestHandler({
+    serverName: false,
+    user: ["email"],
+  })
+);
+
+
+
 const client = new MongoClient('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 
 client.connect(err => {
