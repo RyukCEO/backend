@@ -21,6 +21,9 @@ const RoomSchema = new schema({
         required: true,
         trim: true
     },
+    icon: {
+        type: String,
+    },
     description: {
         type: String,
         trim: true
@@ -53,6 +56,15 @@ const RoomSchema = new schema({
     password: {
         type: String,
         required: false//only for password-protected room
+    },
+    member_count: {
+        type: Number,
+    },
+    member: {
+        type: String,
+    },
+    permissions: {
+        type: String,
     }
 });
 

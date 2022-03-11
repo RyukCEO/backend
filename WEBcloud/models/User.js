@@ -11,8 +11,12 @@ const UserSchema = new schema({
   },
     username: {
       type: String,
-      required: true
-    },
+      required: true,
+      trim: true,
+      lowercase: true,
+      unique: true,
+      match: /^[\w][\w\-\.]*[\w]$/i
+  },
     email: {
       type: String,
       required: true,
@@ -60,14 +64,6 @@ const UserSchema = new schema({
       required: true,
       trim: true
   },
-  username: {
-      type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-      unique: true,
-      match: /^[\w][\w\-\.]*[\w]$/i
-  },
   displayName: {
       type: String,
       required: true,
@@ -81,6 +77,25 @@ const UserSchema = new schema({
       type: String,
       trim: true
   },
+  //multifactorauth
+  mfa: {
+    type: Boolean,
+},
+
+  banner: {
+    type: String,
+  },
+
+  language: {
+    type: String,
+  },
+  verified: {
+    type: Boolean,
+  },
+  usertype: {
+    type: Integer,
+  },
+
   rooms: [{
   type: ObjectId,
   ref: 'Room' 
