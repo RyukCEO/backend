@@ -70,6 +70,7 @@ router.post('/login', async (req, res, next) => {
     email: req.body.email,
     password: req.body.password
   }
+  JSON.stringify(user)
 
     User.find({ email: user.email }).exec()
     .then(user => {
