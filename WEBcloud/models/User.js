@@ -45,6 +45,12 @@ const UserSchema = new schema({
         type: Array,
         default:[]
     },
+    friends:{
+        type: Array,
+    },
+    posts:{
+        type: Array,
+    },
     groups:{
       type: Array,
       default:[]
