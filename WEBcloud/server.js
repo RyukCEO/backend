@@ -27,18 +27,12 @@ import mongoose from 'mongoose';
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import websocket from 'websocket-driver';
-import buffer from "buffer";
-import mustach from "mustach";
-import HttpProxyAgent from 'http-proxy-agent';
-import tmp from 'tmp';
-import { v4 as uuidv4 } from 'uuid';
-import filesize from 'filesize';
-
+import swaggerUi from 'swagger-ui-express';
 
 
 // api route
 import authroutes from './api/auth.js';
-import userroutes from './api/user.js';
+import userroutes from './api/user/user.js';
 import mediapostroutes from './api/mediapost.js';
 import { response } from 'express';
 import User from './models/User.js';

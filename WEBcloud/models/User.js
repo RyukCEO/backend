@@ -93,11 +93,10 @@ const UserSchema = new schema({
     type: Boolean,
   },
   usertype: {
-    type: Integer,
+    type: Number,
   },
 
   rooms: [{
-  type: ObjectId,
   ref: 'Room' 
   }],
   });

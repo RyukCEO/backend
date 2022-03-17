@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 const schema = mongoose.Schema;
 mongoose.Promise = global.Promise;
 
-var Voiceschema = new Schema({ 
+var serverschema = new Schema({ 
     id: {
         type: snowflake,
     },
