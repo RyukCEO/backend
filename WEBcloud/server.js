@@ -27,6 +27,7 @@ import mongoose from 'mongoose';
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import websocket from 'websocket-driver';
+<<<<<<< HEAD
 import buffer from "buffer";
 import mustach from "mustach";
 import HttpProxyAgent from 'http-proxy-agent';
@@ -36,11 +37,14 @@ import filesize from 'filesize';
 import { createStore } from 'redux'
 
 
+=======
+import swaggerUi from 'swagger-ui-express';
+>>>>>>> 7eec7f94b6853d5bc314001a02e91b79382cb4e1
 
 
 // api route
 import authroutes from './api/auth.js';
-import userroutes from './api/user.js';
+import userroutes from './api/user/user.js';
 import mediapostroutes from './api/mediapost.js';
 import { response } from 'express';
 import User from './models/User.js';
