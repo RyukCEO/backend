@@ -102,9 +102,8 @@ const UserSchema = new schema({
     type: Number,
   },
 
-  rooms: [{
-  ref: 'Room' 
-  }],
-  });
-
+  rooms: {
+  type: String,
+  }
+})
 export default mongoose.model('User', UserSchema);

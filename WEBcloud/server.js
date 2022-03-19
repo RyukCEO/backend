@@ -27,19 +27,14 @@ import mongoose from 'mongoose';
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 import websocket from 'websocket-driver';
-<<<<<<< HEAD
 import buffer from "buffer";
-import mustach from "mustach";
+import mustache from "mustache";
 import HttpProxyAgent from 'http-proxy-agent';
 import tmp from 'tmp';
 import { v4 as uuidv4 } from 'uuid';
 import filesize from 'filesize';
 import { createStore } from 'redux'
-
-
-=======
 import swaggerUi from 'swagger-ui-express';
->>>>>>> 7eec7f94b6853d5bc314001a02e91b79382cb4e1
 
 
 // api route
@@ -165,30 +160,7 @@ app.use('/api/auth', authroutes)
 app.use('/api/user', userroutes)
 app.use('/api/mediapost', mediapostroutes)
 
-app.get("/logout", (req, res) => {
-  if (req.session.user && req.cookies.sid) {
-    res.clearCookie("sid");
-    res.redirect("/login");
-  } else {
-    res.redirect("/login");
-  }
-});
 
-
-app.post('/logout', (req,res)  => {
-  req.session.destroy(err => {
-    if (err) {
-      return res.redirect('/logedin')
-    } else {
-    if (req.session.user && req.cookies.sid) {
-    res.clearCookie("sid");
-    res.redirect("/login");
-    } else {
-    res.redirect("/login");
-      }
-    }
-  })
-})
 
 
 export default app;

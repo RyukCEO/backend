@@ -56,6 +56,15 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.get("/:username", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.username);
+    res.status(200).json(other);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 router.post("/getUser", function (request, result) {
   User.findOne({sessiontoken : _id},
     function (error, user) {

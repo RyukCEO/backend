@@ -1,3 +1,5 @@
+
+/*
 import mongoose from "mongoose"
 
 const schema = mongoose.Schema;
@@ -10,7 +12,6 @@ const RoomSchema = new schema({
         trim: true,
         lowercase: true,
         unique: true,
-        match: /^[a-z0-9_-]+$/i
     },
     archived: {
         type: Boolean,
@@ -33,10 +34,10 @@ const RoomSchema = new schema({
 		ref: 'User',
         required: true
     },
-    participants: [{ // We can have an array per role
+    participants: { // We can have an array per role
 		type: ObjectId,
 		ref: 'User'
-	}],
+	},
 	messages: [{
 		type: ObjectId,
 		ref: 'Message'
@@ -73,4 +74,5 @@ const RoomSchema = new schema({
 
 
 
-export default mongoose.model('room', RoomSchema);
+export default mongoose.model('Room', RoomSchema);
+*/
