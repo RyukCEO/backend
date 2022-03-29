@@ -20,7 +20,8 @@ const UserSchema = new schema({
     email: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -31,20 +32,33 @@ const UserSchema = new schema({
       required: false
     },
     desc:{
-      type:String
+      type:String,
+      trim: true,
     },
     profilepicture:{
         type:String,
+        trim: true,
         default:""
     },
-    followers:{
+    followers: [{
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },],
+  /*{
         type: Array,
         default:[]
-    },
-    following:{
+    },*/
+    following:[
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+  /*  {
         type: Array,
         default:[]
-    },
+    }, */
+  
     friends:{
         type: Array,
     },
@@ -104,6 +118,15 @@ const UserSchema = new schema({
 
   rooms: {
   type: String,
-  }
+  },
+
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
+  lastSeen: {
+    type: Date,
+  },
+  
 })
 export default mongoose.model('User', UserSchema);

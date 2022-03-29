@@ -37,6 +37,7 @@ import { createStore } from 'redux'
 import swaggerUi from 'swagger-ui-express';
 
 
+
 // api route
 import authroutes from './api/auth.js';
 import userroutes from './api/user/user.js';
@@ -68,6 +69,13 @@ var server = http.createServer(); l
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ORIGIN,
+    optionsSuccessStatus: 200,
+  })
+);
 
 
 /* sentry */
