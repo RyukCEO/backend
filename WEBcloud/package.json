@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -51,5 +52,8 @@
   "devDependencies": {
     "jest": "^26.6.3",
     "nodemon": "^2.0.12"
+  },
+  "engines": {
+    "node": "16.13.2"
   }
 }
