@@ -35,6 +35,8 @@ import { v4 as uuidv4 } from 'uuid';
 import filesize from 'filesize';
 import { createStore } from 'redux'
 import swaggerUi from 'swagger-ui-express';
+import('newrelic');
+
 
 
 
@@ -69,6 +71,7 @@ var server = http.createServer(); l
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
+/* fix unsuported node version
 app.use(
   cors({
     credentials: true,
@@ -76,7 +79,7 @@ app.use(
     optionsSuccessStatus: 200,
   })
 );
-
+*/
 
 /* sentry */
 Sentry.init({

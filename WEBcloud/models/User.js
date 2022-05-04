@@ -41,8 +41,7 @@ const UserSchema = new schema({
         default:""
     },
     followers: [{
-      type: Schema.Types.ObjectId,
-      ref: "User",
+      
     },],
   /*{
         type: Array,
@@ -50,8 +49,6 @@ const UserSchema = new schema({
     },*/
     following:[
       {
-        type: Schema.Types.ObjectId,
-        ref: "User",
       },
     ],
   /*  {
