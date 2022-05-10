@@ -35,8 +35,7 @@ import { v4 as uuidv4 } from 'uuid';
 import filesize from 'filesize';
 import { createStore } from 'redux'
 import swaggerUi from 'swagger-ui-express';
-import('newrelic');
-
+import ('newrelic');
 
 
 
