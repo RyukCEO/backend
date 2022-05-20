@@ -1,0 +1,42 @@
+import { Submission } from "../types/Submission.ts";
+import { Integration } from "../types/Integration.ts";
+
+const requiredEnvVariables = [
+  "SENDGRID_API_KEY",
+  "SENDGRID_FROM_EMAIL",
+  "SENDGRID_TO_EMAIL",
+];
+
+// sendSimpleMail()
+async function submission(args: { submission: Submission }): Promise<Status> {
+  const env = Deno.env.toObject();
+  if (requiredEnvVariables.some((value) => env[value] === undefined)) {
+    throw `Missing required env variables ${requiredEnvVariables}`;
+  }
+  const mail = await sendSimpleMail(
+    {
+      subject: `Submission ${args.submission.categoryId}`,
+      from: { email: env["SENDGRID_FROM_EMAIL"] },
+      to: [{ email: env["SENDGRID_TO_EMAIL"] }],
+      content: [
+        {
+          type: "text/html",
+          value: `		
+            <b><p>${args.submission.body}</p></b>
+            <br>
+            `,
+        },
+      ],
+    },
+    { apiKey: env["SENDGRID_API_KEY"] }
+  );
+  if (mail.errors) {
+    return 500;
+  } else {
+    return 200;
+  }
+}
+
+export const sendgrid: Integration = {
+  submission,
+};

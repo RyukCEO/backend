@@ -34,21 +34,41 @@ import tmp from 'tmp';
 import { v4 as uuidv4 } from 'uuid';
 import filesize from 'filesize';
 import { createStore } from 'redux'
-import swaggerUi from 'swagger-ui-express';
 import ('newrelic');
+
+const app = express()
 
 
 
 // api route
-import authroutes from './api/auth.js';
+/*import authroutes from './api/auth.js';
 import userroutes from './api/user/user.js';
 import mediapostroutes from './api/mediapost.js';
+app.use('/api/auth', authroutes)
+app.use('/api/user', userroutes)
+app.use('/api/mediapost', mediapostroutes)
+*/
+// insta routes
+import authRoutes from "./routes/auth.route.js";
+import userRoutes from "./routes/user.route.js";
+import postRoutes from "./routes/post.route.js";
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/post", postRoutes);
+
+app.get("/", (req, res) => {
+  res.status(200).json({
+    type: "success",
+    message: "server is up and running",
+    data: null,
+  });
+});
+
+
 import { response } from 'express';
 import User from './models/User.js';
 import 'dotenv/config'
 
-
-const app = express()
 
 //mongoose mongodb database connection
 mongoose.connect('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
@@ -70,66 +90,16 @@ var server = http.createServer(); l
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-/* fix unsuported node version
 app.use(
   cors({
-    credentials: true,
-    origin: ORIGIN,
+    methods: ["GET", "POST"],
+    origin: "*",
     optionsSuccessStatus: 200,
   })
 );
-*/
 
-/* sentry */
-Sentry.init({
-  dsn: "https://2f8e91edbc364356a287d40f6d08f557@o1158419.ingest.sentry.io/6241559",
-  integrations: [
-    new Sentry.Integrations.Http({ tracing: true }),
-    new Tracing.Integrations.Express({ app }),
-  ],
-
-  tracesSampleRate: 1.0,
-});
-
-
-app.use(Sentry.Handlers.requestHandler());
-app.use(Sentry.Handlers.tracingHandler());
-app.use(Sentry.Handlers.errorHandler());
-
-app.get("/debug-sentry", function mainHandler(req, res) {
-  throw new Error("My first Sentry error!");
-});
-
-app.use(function onError(err, req, res, next) {
-  // The error id is attached to `res.sentry` to be returned
-  // and optionally displayed to the user for support.
-  res.statusCode = 500;
-  res.end(res.sentry + "\n");
-});
-
-app.get("/debug-sentry", function (req, res) {
-  throw new Error("My first Sentry error!");
-  res.errorHandler
-});
-
-app.use(
-  Sentry.Handlers.errorHandler({
-    shouldHandleError(error) {
-      // Capture all 404 and 500 errors
-      if (error.status === 404 || error.status === 500) {
-        return true;
-      }
-      return false;
-    },
-  })
-);
-
-app.use(
-  Sentry.Handlers.requestHandler({
-    serverName: false,
-    user: ["email"],
-  })
-);
+const { PORT, MONGODB_URI, NODE_ENV, ORIGIN } = require("./config");
+const { API_ENDPOINT_NOT_FOUND_ERR, SERVER_ERR } = require("./errors");
 
 
 
@@ -164,11 +134,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-//api
-app.use('/api/auth', authroutes)
-app.use('/api/user', userroutes)
-app.use('/api/mediapost', mediapostroutes)
 
 
 
