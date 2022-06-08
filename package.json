@@ -3,18 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node server.ts",
+    "dev": "nodemon ts-node server.ts",
     "socket": "nodemon rtc/server.cjs"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@socket.io/redis-adapter": "^7.1.0",
     "@reduxjs/toolkit": "^1.8.0",
     "@sentry/node": "^6.18.1",
     "@sentry/tracing": "^6.18.1",
+    "@socket.io/redis-adapter": "^7.1.0",
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
     "buffer": "^6.0.3",
@@ -57,7 +58,8 @@
     "jest": "^26.6.3",
     "mocha": "^10.0.0",
     "nodemon": "^2.0.12",
-    "typescript": "^4.4.4"
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.3"
   },
   "engines": {
     "node": "16.13.2"

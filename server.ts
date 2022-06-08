@@ -2,10 +2,10 @@
 import express from 'express';
 import session from 'express-session';
 import bodyParser from 'body-parser';
-import { getRedisInstance, redisInstanceExists } from "./redis/instance.ts";
-import redisSession from './middlewares/redisSession.ts'
+import { getRedisInstance, redisInstanceExists } from "./redis/instance";
+import redisSession from './middlewares/redisSession'
 import { RedisClient, ClientOpts, createClient  } from 'redis';
-import { getIOInstance } from "./socket/instance.ts";
+import { getIOInstance } from "./socket/instance";
 //import Signal from libsignal-service';
 import cassandra from 'cassandra-driver';
 import cookieParser from 'cookie-parser'
