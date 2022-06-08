@@ -1,14 +1,15 @@
 {
-  "name": "googlecloud",
+  "name": "uninet-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "type": "module",
   "scripts": {
-    "start": "node server.ts",
-    "dev": "nodemon ts-node server.ts",
+    "start": "ts-node server.ts",
+    "build": "tsc -p .",
+    "dev": "npm run watch",
     "socket": "nodemon rtc/server.cjs"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
