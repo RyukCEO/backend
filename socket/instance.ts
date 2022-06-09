@@ -14,7 +14,7 @@ export function getIOInstance(server?: Server) {
       transports: ["websocket"],
       cors: {
         allowedHeaders: "Content-Type, Authorization",
-        origin: JSON.parse(process.env.ALLOWED_ORIGINS),
+        origin: JSON.parse("http://localhost:8080"),
         credentials: true,
       }
     })

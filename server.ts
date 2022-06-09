@@ -1,29 +1,25 @@
 //dependencies
 import express from 'express';
-import session from 'express-session';
 import bodyParser from 'body-parser';
-import { getRedisInstance, redisInstanceExists } from "./redis/instance";
-import redisSession from './middlewares/redisSession'
-import { RedisClient, ClientOpts, createClient  } from 'redis';
-import { getIOInstance } from "./socket/instance";
-//import Signal from libsignal-service';
-import cassandra from 'cassandra-driver';
 import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
-import { MongoClient } from 'mongodb';
-import MongoStore from 'connect-mongo';
+import http from "http";
 import mongoose from 'mongoose';
-import buffer from "buffer";
-import HttpProxyAgent from 'http-proxy-agent';
-import tmp from 'tmp';
-import { v4 as uuidv4 } from 'uuid';
-import filesize from 'filesize';
-import { createStore } from 'redux'
+// middlewares
+import { getRedisInstance, redisInstanceExists } from "./redis/instance";
+import { getIOInstance } from "./socket/instance";
+import redisSession from './middlewares/redisSession'
+import realIP from "./middlewares/realIP";
+import cors from "./middlewares/cors";
 import ('newrelic');
 
 const app = express()
+app.disable('x-powered-by');
+
 process.env.JWT_HEADER = "eyJhbGciOiJIUzI1NiJ9.";
 
+const server = new http.Server(app);
+const io = getIOInstance(server);
 
 
 // api route
@@ -38,16 +34,17 @@ app.use('/api/mediapost', mediapostroutes)
 import authRoutes from "./routes/auth.route.js";
 import userRoutes from "./routes/user.route.js";
 import postRoutes from "./routes/post.route.js";
+app.use(bodyParser.json({limit: '10mb'}));
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/post", postRoutes);
 app.use('/api', require('./routes/api'));
 app.use(realIP);
 app.use(cors);
-app.use(function(req, res, next){
-  req.io = io;
-  next();
-})
+
+
+
+
 app.use(redisSession);
 
 app.get("/", (req, res) => {
@@ -59,8 +56,7 @@ app.get("/", (req, res) => {
 });
 
 
-import { response } from 'express';
-import User from './models/User.js';
+
 import 'dotenv/config'
 dotenv.config();
 
@@ -76,78 +72,28 @@ mongoose.connect('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDa
   useCreateIndex: true
 })
 .then((result) => console.log('connected to db'))
-connectRedis()
 .catch((err) => console.log(err))
 
-function connectRedis() {
-  Log.info("Connecting to Redis...")
-  if (redisInstanceExists()) return;
-  const client = getRedisInstance({
-    host: process.env.REDIS_HOST,
-    password: process.env.REDIS_PASS,
-    port: parseInt(process.env.REDIS_PORT)
-  });
-  if (!client) return;
-  client.on("ready", () => {
-    Log.info("Connected!")
-    client.flushall();
-    startServer();
-  });
-  client.on("error", err => {
-    throw err;
-  })
-}
 
+  
 
 
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors({
+/*
+app.use(cors({
     methods: ["GET", "POST"],
     origin: "*",
     optionsSuccessStatus: 200,
   })
 );
-
+*/
 const { PORT, MONGODB_URI, NODE_ENV, ORIGIN } = require("./config");
 const { API_ENDPOINT_NOT_FOUND_ERR, SERVER_ERR } = require("./errors");
 
 
-
-const client = new MongoClient('mongodb+srv://ryuk:jz1234@cluster0.id76b.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
-
-client.connect(err => {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
-  client.close();
-});
-
-
-app.use(session({
-    resave: false,
-    saveUninitialized: true,
-    name: 'sid',
-    secret: 'some secret',
-    store: MongoStore.create({ 
-    mongoUrl: 'mongodb+srv://ryuk:jz1234@sessions.mnty4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority' }),
-    cookie: {
-        maxage: 99 * 99,
-        samesite: false,
-        secure: false,
-        httpOnly: true
-    }
-}))
-
-//remove in production, remove cookie everytime
-app.use((req, res, next) => {
-  if (req.cookies.sid && !req.session.user) {
-    res.clearCookie("sid");
-  }
-  next();
-});
 
 
 
